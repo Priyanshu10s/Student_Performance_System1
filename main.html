@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance System</title>
+    <style>
+        :root {
+            --header-height: 80px;
+            --cards-height: 120px;
+            --search-height: 70px;
+            --sticky-offset: calc(var(--header-height) + var(--cards-height) + var(--search-height));
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: var(--header-height);
+            box-sizing: border-box;
+        }
+        
+        .dashboard-cards {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: var(--header-height);
+            z-index: 90;
+            height: var(--cards-height);
+            box-sizing: border-box;
+            overflow-x: auto;
+        }
+        
+        .search-box {
+            padding: 15px 20px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: calc(var(--header-height) + var(--cards-height));
+            z-index: 80;
+            height: var(--search-height);
+            box-sizing: border-box;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: var(--sticky-offset);
+            height: fit-content;
+            align-self: start;
+            box-sizing: border-box;
+        }
+        
+        .main-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            min-height: 60vh;
+            max-height: calc(100vh - var(--sticky-offset) - 40px);
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        
+        .chart-container {
+            height: 400px;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        input, select, button {
+            padding: 10px;
+            margin-right: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            min-width: 200px;
+            flex: 1 0 auto;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .card-info h3 {
+            margin: 0;
+            font-size: 24px;
+            color: #2c3e50;
+        }
+        
+        .card-info p {
+            margin: 5px 0 0;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+            }
+            
+            .main-content {
+                max-height: none;
+            }
+            
+            .dashboard-cards {
+                height: auto;
+                flex-wrap: wrap;
+                position: sticky;
+                top: var(--header-height);
+            }
+            
+            .search-box {
+                position: sticky;
+                top: calc(var(--header-height) + 180px);
+            }
+            
+            .card {
+                min-width: calc(50% - 10px);
+                margin-bottom: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .card {
+                min-width: 100%;
+            }
+            
+            .search-box {
+                top: calc(var(--header-height) + 280px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Student Performance System</h1>
+    </header>
+    
+    <div class="dashboard-cards">
+        <div class="card">
+            <div class="card-icon" style="background-color: #3498db;">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="card-info">
+                <h3 id="totalStudents">0</h3>
+                <p>Total Students</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon" style="background-color: #2ecc71;">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="card-info">
+                <h3 id="avgMarks">0</h3>
+                <p>Average Marks</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon" style="background-color: #e74c3c;">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="card-info">
+                <h3 id="topStudent">-</h3>
+                <p>Top Performer</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-icon" style="background-color: #9b59b6;">
+                <i class="fas fa-user-clock"></i>
+            </div>
+            <div class="card-info">
+                <h3 id="avgAttendance">0%</h3>
+                <p>Avg Attendance</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search students...">
+        <button onclick="searchStudent()">Search</button>
+        <select id="sortOption">
+            <option value="name">Sort by Name</option>
+            <option value="marks">Sort by Marks</option>
+            <option value="attendance">Sort by Attendance</option>
+        </select>
+        <button onclick="sortStudents()">Sort</button>
+    </div>
+    
+    <div class="container">
+        <div class="dashboard">
+            <div class="sidebar">
+                <h2>Quick Stats</h2>
+                <div id="stats">
+                    <!-- Stats will be loaded here -->
+                </div>
+                
+                <h2>Add Student</h2>
+                <div>
+                    <input type="text" id="newStudentName" placeholder="Name">
+                    <input type="number" id="newStudentMarks" placeholder="Marks">
+                    <input type="number" id="newStudentAttendance" placeholder="Attendance %">
+                    <button onclick="addStudent()">Add</button>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <h2>Performance Overview</h2>
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+                
+                <h2>Student Records</h2>
+                <table id="studentTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Marks</th>
+                            <th>Attendance</th>
+                            <th>Grade</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Student data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
